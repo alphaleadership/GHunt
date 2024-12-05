@@ -82,7 +82,7 @@ def scrape(gaiaID, client, cookies, config, headers, regex_rev_by_id, is_headles
             pass
         
         if tab_info and tab_info.text:
-            scroll_max = sum([int(x) for x in tab_info.text.split() if x.isdigit()])
+            scroll_max = sum(int(x) for x in tab_info.text.split() if x.isdigit())
         else:
             return False
 
@@ -199,14 +199,14 @@ def get_confidence(geolocator, data, gmaps_radius):
         for hash2 in locations:
             if hash2 in to_del or hash == hash2:
                 continue
-            if all([loc in locations[hash]["locations"] for loc in locations[hash2]["locations"]]):
+            if all(loc in locations[hash]["locations"] for loc in locations[hash2]["locations"]):
                 to_del.append(hash2)
     for hash in to_del:
         del locations[hash]
 
     tmprinter.out("Calculating confidence...")
-    maxrange = max([locations[hash]["range"] for hash in locations])
-    maxlen = max([len(locations[hash]["locations"]) for hash in locations])
+    maxrange = max(locations[hash]["range"] for hash in locations)
+    maxlen = max(len(locations[hash]["locations"]) for hash in locations)
     minreq = 3
     mingroups = 3
 
@@ -217,7 +217,7 @@ def get_confidence(geolocator, data, gmaps_radius):
         if loc["range"] == maxrange:
             locations[hash]["score"] += score_steps * 3
         if len(locations) >= mingroups:
-            others = sum([len(locations[h]["locations"]) for h in locations if h != hash])
+            others = sum(len(locations[h]["locations"]) for h in locations if h != hash)
             if len(loc["locations"]) > others:
                 locations[hash]["score"] += score_steps * 2
         if len(loc["locations"]) >= minreq:
@@ -228,7 +228,7 @@ def get_confidence(geolocator, data, gmaps_radius):
 
     panels = sorted(set([loc["score"] for loc in locations.values()]), reverse=True)
 
-    maxscore = sum([p * score_steps for p in range(1, score_steps + 1)])
+    maxscore = sum(p * score_steps for p in range(1, score_steps + 1))
     for panel in panels:
         locs = [loc for loc in locations.values() if loc["score"] == panel]
         if len(locs[0]["locations"]) == 1:

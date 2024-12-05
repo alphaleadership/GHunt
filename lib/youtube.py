@@ -190,7 +190,7 @@ def get_confidence(data, query, hash):
     if not channels or (panels and panels[0] <= 0):
         return 0, []
 
-    maxscore = sum([p * score_steps for p in range(1, score_steps + 1)])
+    maxscore = sum(p * score_steps for p in range(1, score_steps + 1))
     for panel in panels:
         chans = [c for c in channels if c["score"] == panel]
         if len(chans) > 1:
